@@ -21,4 +21,7 @@ def create_app(test_config=None):
     db.init_app(app)
     migrate.init_app(app, db)
 
+    # Import models
+    from app.models.contact import Contact
+
     return app
