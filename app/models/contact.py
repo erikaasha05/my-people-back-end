@@ -11,6 +11,7 @@ class Contact(db.Model):
     relationship = db.Column(db.ARRAY(db.String), nullable = True)
     notes = db.Column(db.String(500), nullable = True)
     tags = db.Column(db.ARRAY(db.String), nullable = True)
+    reminders = db.relationship("Reminder", back_populates="contact", lazy="select")
 
     def to_json(self):
         return {

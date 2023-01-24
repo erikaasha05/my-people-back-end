@@ -23,6 +23,7 @@ def create_app(test_config=None):
 
     # Import models
     from app.models.contact import Contact
+    from app.models.reminder import Reminder
 
     # Register Blueprints
     from .contact_routes import contacts_bp
