@@ -24,4 +24,8 @@ def create_app(test_config=None):
     # Import models
     from app.models.contact import Contact
 
+    # Register Blueprints
+    from .contact_routes import contacts_bp
+    app.register_blueprint(contacts_bp)
+
     return app
