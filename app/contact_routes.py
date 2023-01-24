@@ -64,4 +64,4 @@ def delete_contact(contact_id):
     db.session.delete(contact)
     db.session.commit()
 
-    return make_response({"details":f"Contact {contact.contact_id}: {contact.first_name} {contact.last_name} successfully deleted"})
+    return make_response({"details":f"Contact {contact.contact_id}: \'{contact.first_name} {contact.last_name}\' successfully deleted"})

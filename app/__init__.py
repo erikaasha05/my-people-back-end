@@ -27,6 +27,8 @@ def create_app(test_config=None):
 
     # Register Blueprints
     from .contact_routes import contacts_bp
+    from .reminder_routes import reminders_bp
     app.register_blueprint(contacts_bp)
+    app.register_blueprint(reminders_bp)
 
     return app
