@@ -2,6 +2,7 @@
 from app import db
 from flask import Blueprint, request, make_response, jsonify, abort
 from app.models.contact import Contact
+from app.models.reminder import Reminder
 
 contacts_bp = Blueprint("contacts_bp", __name__, url_prefix="/contacts")
 
@@ -65,3 +66,33 @@ def delete_contact(contact_id):
     db.session.commit()
 
     return make_response({"details":f"Contact {contact.contact_id}: \'{contact.first_name} {contact.last_name}\' successfully deleted"})
+
+@contacts_bp.route("/<contact_id>/reminders", methods=["GET"])
+def get_reminders_for_contact(contact_id):
+    contact = validate_id(Contact, contact_id)
+
+    reminders = [reminder.to_json() for reminder in contact.reminders]
+
+    # maybe won't need below if to_json method is updated in models
+    contact_dict = contact.to_json()
+    contact_dict["reminders"] = reminders
+    # contact["reminders"] = reminders
+
+    return make_response(jsonify(contact_dict))
+
+@contacts_bp.route("/<contact_id>/reminders", methods=["POST"])
+def create_reminders_for_a_contact(contact_id):
+    contact = validate_id(Contact, contact_id)
+    request_body = request.get_json()
+
+    new_reminder = validate_request_body(Reminder, request_body)
+    new_reminder.contact_id = contact_id
+
+    db.session.add(new_reminder)
+    db.session.commit()
+
+    # maybe won't need below if to_json method is updated in models
+    reminder_dict = new_reminder.to_json()
+    reminder_dict["contact_id"] = contact_id
+
+    return make_response(jsonify(reminder_dict), 201)

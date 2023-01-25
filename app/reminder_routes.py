@@ -39,4 +39,3 @@ def delete_reminder(reminder_id):
     db.session.commit()
 
     return make_response({"details":f"Reminder {reminder.reminder_id}: \'{reminder.message}\' successfully deleted"})
-
