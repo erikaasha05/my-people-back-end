@@ -11,7 +11,7 @@ load_dotenv()
 
 
 def create_app(test_config=None):
-    app = Flask(__name__)
+    application = app = Flask(__name__)
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
     if test_config is None:
@@ -31,8 +31,8 @@ def create_app(test_config=None):
     migrate.init_app(app, db)
 
     # Register Blueprints
-    from .contact_routes import contacts_bp
-    from .reminder_routes import reminders_bp
+    from app.contact_routes import contacts_bp
+    from app.reminder_routes import reminders_bp
     app.register_blueprint(contacts_bp)
     app.register_blueprint(reminders_bp)
 
