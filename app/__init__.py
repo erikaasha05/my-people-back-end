@@ -12,13 +12,24 @@ def create_app(test_config=None):
     app = Flask(__name__)
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-    if test_config is None:
-        app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
-            "SQLALCHEMY_DATABASE_URI")
+    # if test_config is None:
+    #     app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
+    #         "SQLALCHEMY_DATABASE_URI")
+    # else:
+    #     app.config["TESTING"] = True
+    #     app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
+    #         "SQLALCHEMY_TEST_DATABASE_URI")
+
+    if "RDS_DB_NAME" in os.environ:
+        app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://{username}:{password}@{host}:{port}/{database}".format(
+        username=os.environ['RDS_USERNAME'],
+        password=os.environ['RDS_PASSWORD'],
+        host=os.environ['RDS_HOSTNAME'],
+        port=os.environ['RDS_PORT'],
+        database=os.environ['RDS_DB_NAME'],
+    )
     else:
-        app.config["TESTING"] = True
-        app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
-            "SQLALCHEMY_TEST_DATABASE_URI")
+        app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("SQLALCHEMY_DATABASE_URI")
 
     db.init_app(app)
     migrate.init_app(app, db)
