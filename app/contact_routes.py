@@ -1,4 +1,3 @@
-
 from app import db
 from flask import Blueprint, request, make_response, jsonify, abort
 from app.models.contact import Contact
@@ -54,9 +53,24 @@ def read_one_contact(contact_id):
 
     return make_response(jsonify(response))
 
-@contacts_bp.route("/<contact_id>", methods=["PATCH"])
+@contacts_bp.route("/<contact_id>", methods=["PUT"])
 def update_one_contact(contact_id):
-    pass
+    contact = validate_id(Contact, contact_id)
+    request_body = request.get_json()
+
+    contact.first_name = request_body["first_name"]
+    contact.last_name = request_body["last_name"]
+    contact.number = request_body["number"]
+    contact.email = request_body.get("email")
+    contact.address = request_body.get("address")
+    contact.birthday = request_body.get("birthday")
+    contact.relationship = request_body.get("relationship")
+    contact.notes = request_body.get("notes")
+    contact.tags = request_body.get("tags")
+
+    db.session.commit()
+
+    return make_response(jsonify({"contact": contact.to_json()}))
 
 @contacts_bp.route("/<contact_id>", methods=["DELETE"])
 def delete_contact(contact_id):
