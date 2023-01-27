@@ -90,7 +90,6 @@ def get_reminders_for_contact(contact_id):
     # maybe won't need below if to_json method is updated in models
     contact_dict = contact.to_json()
     contact_dict["reminders"] = reminders
-    # contact["reminders"] = reminders
 
     return make_response(jsonify(contact_dict))
 

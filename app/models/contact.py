@@ -33,10 +33,10 @@ class Contact(db.Model):
             first_name=contact_data["first_name"],
             last_name=contact_data["last_name"],
             number=contact_data["number"],
-            email=contact_data["email"],
-            address=contact_data["address"],
-            birthday=contact_data["birthday"],
-            relationship=contact_data["relationship"],
-            notes=contact_data["notes"],
-            tags=contact_data["tags"]
+            email=contact_data.get("email"),
+            address=contact_data.get("address"),
+            birthday=contact_data.get("birthday"),
+            relationship=contact_data.get("relationship"),
+            notes=contact_data.get("notes"),
+            tags=contact_data.get("tags")
         )
