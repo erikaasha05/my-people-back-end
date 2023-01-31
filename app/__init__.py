@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from dotenv import load_dotenv
 import os
+from flask_cors import CORS
 
 db = SQLAlchemy()
 migrate = Migrate(compare_type=True)
@@ -44,4 +45,5 @@ def create_app(test_config=None):
     app.register_blueprint(contacts_bp)
     app.register_blueprint(reminders_bp)
 
+    CORS(app)
     return app
