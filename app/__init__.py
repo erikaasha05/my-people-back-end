@@ -6,7 +6,7 @@ import os
 from flask_cors import CORS
 
 db = SQLAlchemy()
-migrate = Migrate(compare_type=True)
+migrate = Migrate()
 load_dotenv()
 
 def create_app(test_config=None):
@@ -38,6 +38,7 @@ def create_app(test_config=None):
     # Import models
     from app.models.contact import Contact
     from app.models.reminder import Reminder
+    from app.models.user import User
 
     # Register Blueprints
     from app.contact_routes import contacts_bp
