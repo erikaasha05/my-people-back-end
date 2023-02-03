@@ -1,5 +1,6 @@
 from app import db
 from flask import Blueprint, request, make_response, jsonify, abort
+from flask_jwt_extended import jwt_required
 from app.models.contact import Contact
 from app.models.reminder import Reminder
 
@@ -28,6 +29,7 @@ def validate_id(cls, model_id):
     return model
 
 @contacts_bp.route("", methods=["GET"])
+@jwt_required()
 def read_all_contacts():
     contacts = Contact.query.all()
     contacts_response = [contact.to_json() for contact in contacts]

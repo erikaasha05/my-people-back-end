@@ -4,6 +4,8 @@ from flask_migrate import Migrate
 from dotenv import load_dotenv
 import os
 from flask_cors import CORS
+from flask_jwt_extended import JWTManager, get_jwt, get_jwt_identity, create_access_token
+from datetime import datetime, timedelta, timezone
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -11,6 +13,8 @@ load_dotenv()
 
 def create_app(test_config=None):
     app = Flask(__name__)
+    app.config["JWT_SECRET_KEY"] = "remember-to-change-this"
+    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=2)
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
     # if test_config is None:
@@ -32,6 +36,8 @@ def create_app(test_config=None):
     else:
         app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("SQLALCHEMY_DATABASE_URI")
 
+    jwt = JWTManager(app)
+
     db.init_app(app)
     migrate.init_app(app, db)
 
@@ -43,8 +49,32 @@ def create_app(test_config=None):
     # Register Blueprints
     from app.contact_routes import contacts_bp
     from app.reminder_routes import reminders_bp
+    from app.user_routes import users_bp
+    from app.login_routes import login_bp
+    from app.logout_routes import logout_bp
     app.register_blueprint(contacts_bp)
     app.register_blueprint(reminders_bp)
+    app.register_blueprint(users_bp)
+    app.register_blueprint(login_bp)
+    app.register_blueprint(logout_bp)
+
+    @app.after_request
+    def refresh_expiring_jwts(response):
+        try:
+            exp_timestamp = get_jwt()["exp"]
+            now = datetime.now(timezone.utc)
+            target_timestamp = datetime.timestamp(now + timedelta(minutes=30))
+            
+            if target_timestamp > exp_timestamp:
+                access_token = create_access_token(identity=get_jwt_identity())
+                data = response.get_json()
+                if type(data) is dict:
+                    data["access_token"] = access_token
+                    response.data = json.dumps(data)
+            
+            return response
+        except (RuntimeError, KeyError):
+            return response
 
     CORS(app)
     return app
