@@ -29,14 +29,13 @@ def validate_id(cls, model_id):
     return model
 
 @contacts_bp.route("", methods=["GET"])
-# @jwt_required()
 def read_all_contacts():
     contacts = Contact.query.all()
     contacts_response = [contact.to_json() for contact in contacts]
 
     return jsonify(contacts_response)
 
-# refactored using jwt_required to add a contact to a user's profile
+# using jwt_required to add a contact to a user's profile
 @contacts_bp.route("", methods=["POST"])
 @jwt_required()
 def create_contact_for_user():
@@ -54,7 +53,7 @@ def create_contact_for_user():
 
     return make_response(jsonify(new_contact.to_json()), 201)
 
-# refactored using jwt_required to get a contact
+# using jwt_required to get a contact
 @contacts_bp.route("/<contact_id>", methods=["GET"])
 @jwt_required()
 def read_one_contact(contact_id):
@@ -64,7 +63,7 @@ def read_one_contact(contact_id):
 
     return make_response(jsonify(response))
 
-# refactored using jwt_required to update a contact
+# using jwt_required to update a contact
 @contacts_bp.route("/<contact_id>", methods=["PUT"])
 @jwt_required()
 def update_one_contact(contact_id):
@@ -85,7 +84,7 @@ def update_one_contact(contact_id):
 
     return make_response(jsonify({"contact": contact.to_json()}))
 
-# refactored using jwt_required to delete a contact for a user
+# using jwt_required to delete a contact for a user
 @contacts_bp.route("/<contact_id>", methods=["DELETE"])
 @jwt_required()
 def delete_contact(contact_id):
@@ -102,15 +101,15 @@ def get_reminders_for_contact(contact_id):
 
     reminders = [reminder.to_json() for reminder in contact.reminders]
 
-    # maybe won't need below if to_json method is updated in models
     contact_dict = contact.to_json()
     contact_dict["reminders"] = reminders
 
     return make_response(jsonify(contact_dict))
 
 @contacts_bp.route("/<contact_id>/reminders", methods=["POST"])
+@jwt_required()
 def create_reminders_for_a_contact(contact_id):
-    contact = validate_id(Contact, contact_id)
+    validate_id(Contact, contact_id)
     request_body = request.get_json()
 
     new_reminder = validate_request_body(Reminder, request_body)
@@ -119,8 +118,5 @@ def create_reminders_for_a_contact(contact_id):
     db.session.add(new_reminder)
     db.session.commit()
 
-    # maybe won't need below if to_json method is updated in models
     reminder_dict = new_reminder.to_json()
-    # reminder_dict["contact_id"] = contact_id
-
     return make_response(jsonify(reminder_dict), 201)

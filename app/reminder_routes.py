@@ -1,5 +1,5 @@
 from app import db
-from flask import Blueprint, request, make_response, jsonify, abort
+from flask import Blueprint, request, make_response, jsonify
 from flask_jwt_extended import jwt_required
 from app.models.reminder import Reminder
 from app.contact_routes import validate_id, validate_request_body
@@ -32,7 +32,7 @@ def read_one_reminder(reminder_id):
 
     return make_response(jsonify(response))
 
-# refactored to check for valid token
+# using jwt_required to delete a reminder
 @reminders_bp.route("/<reminder_id>", methods=["DELETE"])
 @jwt_required()
 def delete_reminder(reminder_id):

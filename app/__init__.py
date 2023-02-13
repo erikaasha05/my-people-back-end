@@ -13,13 +13,12 @@ load_dotenv()
 
 def create_app(test_config=None):
     app = Flask(__name__)
-    app.config["JWT_SECRET_KEY"] = "remember-to-change-this"
+    app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY")
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=2)
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-    if test_config is None:
-        app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
-            "SQLALCHEMY_DATABASE_URI")
+    app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
+        "SQLALCHEMY_DATABASE_URI")
     # else:
     #     app.config["TESTING"] = True
     #     app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
