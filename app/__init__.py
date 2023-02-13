@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, json
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from dotenv import load_dotenv
@@ -36,7 +36,7 @@ def create_app(test_config=None):
     else:
         app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("SQLALCHEMY_DATABASE_URI")
 
-    jwt = JWTManager(app)
+    JWTManager(app)
 
     db.init_app(app)
     migrate.init_app(app, db)

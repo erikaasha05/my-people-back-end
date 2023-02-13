@@ -26,7 +26,7 @@ class Contact(db.Model):
             "birthday": self.birthday,
             "relationship": self.relationship,
             "notes": self.notes,
-            "tags": self.tags
+            "tags": self.tags,
         }
 
     @classmethod
